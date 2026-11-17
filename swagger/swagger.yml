@@ -1594,8 +1594,6 @@ definitions:
         type: string
       ProveedorId:
         $ref: '#/definitions/models.Proveedor'
-      TipoCuentaBancariaId:
-        type: boolean
       TipoCuentaId:
         type: integer
         format: int64
