@@ -133,7 +133,7 @@ func (c *EstadoProveedorController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllEstadoProveedor(query, fields, sortby, order, offset, limit)
+	l, total, err := models.GetAllEstadoProveedor(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service GetAll: The request contains an incorrect parameter or no record exists"
@@ -142,7 +142,7 @@ func (c *EstadoProveedorController) GetAll() {
 		if l == nil {
 			l = []interface{}{}
 		}
-		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": l}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": l, "Total": total}
 	}
 	c.ServeJSON()
 }
