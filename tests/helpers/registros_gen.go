@@ -70,7 +70,6 @@ func NuevoCuentaBancaria(t *testing.T) *models.CuentaBancaria {
 		NumeroCuenta:           "Prueba",
 		EntidadBancariaId:      1,
 		ContactoId:             &models.Contacto{Id: CrearContacto(t).Id},
-		TipoCuentaBancariaId:   true,
 		MontoCapitalAutorizado: 1.5,
 		ProveedorId:            &models.Proveedor{Id: CrearProveedor(t).Id},
 		UsuarioModificacionId:  1,
