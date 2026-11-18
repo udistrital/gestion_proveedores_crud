@@ -16,7 +16,6 @@ type CuentaBancaria struct {
 	NumeroCuenta           string     `orm:"column(numero_cuenta)"`
 	EntidadBancariaId      int        `orm:"column(entidad_bancaria_id)"`
 	ContactoId             *Contacto  `orm:"column(contacto_id);rel(fk);null"`
-	TipoCuentaBancariaId   bool       `orm:"column(tipo_cuenta_bancaria_id)"`
 	MontoCapitalAutorizado float64    `orm:"column(monto_capital_autorizado);null"`
 	ProveedorId            *Proveedor `orm:"column(proveedor_id);rel(fk)"`
 	Activo                 bool       `orm:"column(activo)"`
@@ -145,7 +144,7 @@ func UpdateCuentaBancariaById(m *CuentaBancaria) (err error) {
 	if err = o.Read(&v); err == nil {
 		var num int64
 		if num, err = o.Update(m, "TipoCuentaId", "NumeroCuenta", "EntidadBancariaId", "ContactoId",
-			"TipoCuentaBancariaId", "MontoCapitalAutorizado", "ProveedorId", "Activo", "FechaModificacion",
+			"MontoCapitalAutorizado", "ProveedorId", "Activo", "FechaModificacion",
 			"UsuarioModificacionId"); err == nil {
 			fmt.Println("Number of records updated in database:", num)
 		}
