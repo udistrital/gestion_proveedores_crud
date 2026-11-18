@@ -155,30 +155,49 @@ func (c *PerfilProveedorController) GetAll() {
 // @router /:id [put]
 func (c *PerfilProveedorController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.PerfilProveedor{Id: id}
-	fechaCreacionOriginal := v.FechaCreacion
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if v.Id != id {
-			c.Data["message"] = "Error service Put: The id cannot be modified"
-			c.Abort("400")
-		}
-		if v.Id == 0 {
-			v.Id = id
-		}
-		v.FechaCreacion = fechaCreacionOriginal
-		v.FechaModificacion = time_bogota.Tiempo_bogota()
-		if err := models.UpdatePerfilProveedorById(&v); err == nil {
-			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
-		} else {
-			beeLogger.Log.Error(err.Error())
-			c.Data["message"] = "Error service Put: The request contains an incorrect data type or an invalid parameter"
-			c.Abort("400")
-		}
-	} else {
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id <= 0 {
+		c.Data["message"] = "Error service Put: Invalid ID"
+		c.Abort("400")
+		return
+	}
+
+	v, err := models.GetPerfilProveedorById(id)
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Put: Record not found"
+		c.Abort("404")
+		return
+	}
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, v); err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Put: Invalid request body"
+		c.Abort("400")
+		return
+	}
+
+	if v.Id != id {
+		c.Data["message"] = "Error service Put: The id cannot be modified"
+		c.Abort("400")
+		return
+	}
+
+	v.Id = id
+	v.FechaModificacion = time_bogota.Tiempo_bogota()
+
+	if err := models.UpdatePerfilProveedorById(v); err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service Put: The request contains an incorrect data type or an invalid parameter"
 		c.Abort("400")
+		return
+	}
+
+	c.Data["json"] = map[string]interface{}{
+		"Success": true,
+		"Status": "200",
+		"Message": "Update successful",
+		"Data": v,
 	}
 	c.ServeJSON()
 }
